@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node --watch --loader ts-node/esm src/server.ts"
+    "dev": "cross-env NODE_ENV=development node --watch --loader ts-node/esm src/server.ts"
   },
   "keywords": [
     "NodeJS",
@@ -14,16 +14,22 @@
   "author": "Nithin kumar",
   "license": "ISC",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.3.0",
     "cross-env": "^10.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "http-errors": "^2.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.17.1",
     "winston": "^3.17.0"
   }
 }
