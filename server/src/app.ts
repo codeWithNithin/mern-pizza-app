@@ -1,10 +1,12 @@
 import express from "express";
 import healthCheckRouter from "./healthCheck/healthCheck.routes.js";
 import { globalErrHandler } from "./common/middlewares/globarlErrorHandler.js";
+import authRouter from "./users/auth.router.js";
 
 const app = express();
 
 app.use("/health-check", healthCheckRouter);
+app.use('/auth', authRouter);
 
 app.use(globalErrHandler)
 
