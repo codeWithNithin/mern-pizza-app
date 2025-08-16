@@ -4,6 +4,7 @@ import { globalErrHandler } from "./common/middlewares/globarlErrorHandler.js";
 
 const app = express();
 
+app.use("/health-check", healthCheckRouter);
 
 app.use(globalErrHandler)
 
