@@ -2,9 +2,9 @@ import mongoose, { Model } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import { Config } from "../config/index.js";
-import type { IUser, UserMethods } from "./user.types.js";
+import type { UserSchema, UserMethods } from "./user.types.js";
 
-const userSchema = new mongoose.Schema<IUser, Model<IUser, {}, UserMethods>>({
+const userSchema = new mongoose.Schema<UserSchema, Model<UserSchema, {}, UserMethods>>({
   email: {
     type: String,
     required: true,
@@ -45,7 +45,7 @@ userSchema.methods.generateToken = function () {
   });
 };
 
-const User = mongoose.model<IUser, Model<IUser, {}, UserMethods>>(
+const User = mongoose.model<UserSchema, Model<UserSchema, {}, UserMethods>>(
   "User",
   userSchema
 );

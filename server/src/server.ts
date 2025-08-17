@@ -8,7 +8,6 @@ async function startServer() {
   await ConnectDB();
   app.listen(PORT, () => {
     logger.info(`Server is running on port ${PORT}`, { port: PORT });
-    console.log(`Server is running on port ${PORT}`);
   });
 }
 

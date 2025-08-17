@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import type UserService from "./user.service.js";
 import createHttpError from "http-errors";
+import type { AuthRequest } from "./user.types.js";
 
 export default class AuthController {
   constructor(private userService: UserService) {}
@@ -26,7 +27,6 @@ export default class AuthController {
     // 5. then create the user
     const newUser = await this.userService.create(req.body);
 
-    console.log("newUser", newUser);
 
     //6. generate the token and save it in cookie
     const token = newUser.generateToken();
@@ -79,7 +79,7 @@ export default class AuthController {
     res.status(200).json({ id: user._id });
   };
 
-  logout = (req: Request, res: Response, next: NextFunction) => {
+  logout = (req: AuthRequest, res: Response, next: NextFunction) => {
     res.clearCookie("token");
     res.status(200).json({ message: "Logout successful" });
   };
