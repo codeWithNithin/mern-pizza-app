@@ -2,18 +2,25 @@ import type { NextFunction, Request, Response } from "express";
 import type UserService from "./user.service.js";
 import createHttpError from "http-errors";
 import type { AuthRequest } from "./user.types.js";
+import { createUserSchema } from "./create-user.validator.js";
+import { loginUserSchema } from "./login.validator.js";
 
 export default class AuthController {
   constructor(private userService: UserService) {}
 
   register = async (req: Request, res: Response, next: NextFunction) => {
     // 1. validate the Request body
-    const { email, userName, password } = req.body;
 
-    if (!email || !userName || !password) {
-      const err = createHttpError(400, "Missing required fields");
+    const validator = createUserSchema.safeParse(req.body);
+
+    console.log(validator.error);
+
+    if (!validator.success) {
+      const err = createHttpError(400, validator.error.message);
       next(err);
     }
+
+    const { email, userName, password } = req.body;
 
     // 2. check if that user already exists by cheking the email id
     const user = await this.userService.findByEmail(email);
@@ -25,8 +32,11 @@ export default class AuthController {
     }
 
     // 5. then create the user
-    const newUser = await this.userService.create(req.body);
-
+    const newUser = await this.userService.create({
+      email,
+      userName,
+      password,
+    });
 
     //6. generate the token and save it in cookie
     const token = newUser.generateToken();
@@ -43,6 +53,14 @@ export default class AuthController {
   };
 
   login = async (req: Request, res: Response, next: NextFunction) => {
+
+    const validator = loginUserSchema.safeParse(req.body);
+
+    if (!validator.success) {
+      const err = createHttpError(400, validator.error.message);
+      next(err);
+    }
+
     const { email, password } = req.body;
     // 1. validate incoming request
 

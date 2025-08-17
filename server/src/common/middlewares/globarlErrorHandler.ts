@@ -17,6 +17,8 @@ export const globalErrHandler = (
 
     const message = isProduction ? 'Internal Server Error' : err.message
 
+    console.log(err.stack)
+
     logger.error(err.message, {
         statusCode,
         path: req.path,
