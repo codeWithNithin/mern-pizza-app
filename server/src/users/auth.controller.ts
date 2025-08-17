@@ -4,9 +4,10 @@ import createHttpError from "http-errors";
 import type { AuthRequest } from "./user.types.js";
 import { createUserSchema } from "./create-user.validator.js";
 import { loginUserSchema } from "./login.validator.js";
+import type { Logger } from "winston";
 
 export default class AuthController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private logger: Logger) {}
 
   register = async (req: Request, res: Response, next: NextFunction) => {
     // 1. validate the Request body
@@ -21,6 +22,12 @@ export default class AuthController {
     }
 
     const { email, userName, password } = req.body;
+
+    this.logger.debug("New request to register a user", {
+      userName,
+      email,
+      password: "******",
+    });
 
     // 2. check if that user already exists by cheking the email id
     const user = await this.userService.findByEmail(email);
@@ -38,6 +45,8 @@ export default class AuthController {
       password,
     });
 
+    this.logger.info("User has been registered", { id: newUser._id });
+
     //6. generate the token and save it in cookie
     const token = newUser.generateToken();
 
@@ -53,7 +62,6 @@ export default class AuthController {
   };
 
   login = async (req: Request, res: Response, next: NextFunction) => {
-
     const validator = loginUserSchema.safeParse(req.body);
 
     if (!validator.success) {
@@ -62,25 +70,29 @@ export default class AuthController {
     }
 
     const { email, password } = req.body;
-    // 1. validate incoming request
 
-    if (!email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
+    this.logger.debug("New request to login a user", {
+      email,
+      password: "******",
+    });
 
     // 2. check if that user already exists by cheking the email id
     const user = await this.userService.findByEmail(email);
 
     // 3. if found then send err msg saying user already exists 400.
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      const err = createHttpError(400, "Invalid credentials");
+      next(err);
+      return;
     }
 
     // 3. check if password is correct
     const isPasswordCorrect = user.comparePassword(password);
 
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      const err = createHttpError(400, "Invalid credentials");
+      next(err);
+      return;
     }
 
     // 4. generate the token and save it in cookie
@@ -93,12 +105,16 @@ export default class AuthController {
       sameSite: "none",
     });
 
+    this.logger.info("User has been logged in", { id: user._id });
+
     // 5. send success msg
     res.status(200).json({ id: user._id });
   };
 
   logout = (req: AuthRequest, res: Response, next: NextFunction) => {
     res.clearCookie("token");
+    this.logger.info("User has been logged out", { id: req.user?._id });
+
     res.status(200).json({ message: "Logout successful" });
   };
 }

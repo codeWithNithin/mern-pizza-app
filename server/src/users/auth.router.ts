@@ -3,11 +3,14 @@ import AuthController from "./auth.controller.js";
 import UserService from "./user.service.js";
 import asyncHandler from "../common/utils/asyncWrapper.js";
 import protect from "../common/middlewares/authenticate.js";
+import logger from "../config/logger.js";
 
 const router = Router();
 
 const userService = new UserService();
-const authController = new AuthController(userService);
+
+
+const authController = new AuthController(userService, logger);
 
 /**
  * @path: /auth/register
