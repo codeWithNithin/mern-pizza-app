@@ -4,20 +4,30 @@ import jwt, { type JwtPayload } from "jsonwebtoken";
 import { Config } from "../config/index.js";
 import type { UserSchema, UserMethods } from "./user.types.js";
 
-const userSchema = new mongoose.Schema<UserSchema, Model<UserSchema, {}, UserMethods>>({
-  email: {
-    type: String,
-    required: true,
+const userSchema = new mongoose.Schema<
+  UserSchema,
+  Model<UserSchema, {}, UserMethods>
+>(
+  {
+    email: {
+      type: String,
+      required: true,
+    },
+    userName: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  userName: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
+
+userSchema.index({ updatedAt: -1 });
 
 // before document gets saved hash the password and store it in the database.
 userSchema.pre("save", async function (next) {
