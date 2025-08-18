@@ -12,4 +12,19 @@ export default class UserService {
   findByEmail = async (email: string) => {
     return await UserModel.findOne({ email });
   };
+
+  findById = async (id: string) => {
+    return await UserModel.findById(id);
+  };
+  getAll = async () => {
+    return await UserModel.find({}).select("-password");
+  };
+
+  update = async (id: string, userData: UserSchema) => {
+    return await UserModel.findByIdAndUpdate(id, userData, { new: true });
+  };
+
+  delete = async (id: string) => {
+    return await UserModel.findByIdAndDelete(id);
+  };
 }
