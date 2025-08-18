@@ -1,7 +1,6 @@
 import { Router } from "express";
 import UserController from "./user.controller.js";
 import UserService from "./user.service.js";
-import { createUserSchema } from "./create-user.validator.js";
 import asyncHandler from "../common/utils/asyncWrapper.js";
 
 const router = Router();

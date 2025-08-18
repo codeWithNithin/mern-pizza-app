@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import UserModel from "./user.model.js";
 import type { UserSchema } from "./user.types.js";
+import APIFeatures from "../common/utils/ApiFeatures.js";
 
 export default class UserService {
   constructor() {}
@@ -16,8 +17,15 @@ export default class UserService {
   findById = async (id: string) => {
     return await UserModel.findById(id);
   };
-  getAll = async () => {
-    return await UserModel.find({}).select("-password");
+  getAll = async (req: Request) => {
+    console.log(req.query)
+    const features = new APIFeatures(UserModel.find().select("-password"), req.query)
+      .filter()
+      .paginate();
+
+    const users = await features.query;
+
+    return users;
   };
 
   update = async (id: string, userData: UserSchema) => {
