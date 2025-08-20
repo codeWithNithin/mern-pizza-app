@@ -20,18 +20,19 @@ const router = createBrowserRouter([
                     },
                 ]
             },
-        ],
-    },
-    {
-        path: "/auth",
-        element: <NonAuth />,
-        children: [
             {
-                path: "login",
-                element: <Login />,
+                path: "/auth",
+                element: <NonAuth />,
+                children: [
+                    {
+                        path: "login",
+                        element: <Login />,
+                    },
+                ],
             },
         ],
     },
+
 ])
 
 export default router
