@@ -3,6 +3,7 @@ import NonAuth from "./components/NonAuth"
 import Login from "./pages/Login"
 import Root from "./components/Root"
 import Dashboard from "./components/Dashboard"
+import Home from "./pages/Home"
 
 const router = createBrowserRouter([
     {
@@ -12,6 +13,12 @@ const router = createBrowserRouter([
             {
                 path: "",
                 element: <Dashboard />,
+                children: [
+                    {
+                        path: "",
+                        element: <Home />,
+                    },
+                ]
             },
         ],
     },
