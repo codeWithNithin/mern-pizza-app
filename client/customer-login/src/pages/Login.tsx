@@ -14,8 +14,11 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { GalleryVerticalEnd } from "lucide-react"
-import { login } from "@/http/api"
+import { GalleryVerticalEnd, Loader2Icon } from "lucide-react"
+import { login, self } from "@/http/api"
+import { useAuthStore } from "@/store"
+import type { Credentials } from "@/types"
+import { useMutation, useQuery } from "@tanstack/react-query"
 
 const FormSchema = z.object({
   email: z.string().email({
@@ -26,7 +29,51 @@ const FormSchema = z.object({
   })
 })
 
+const loginUser = async (credentials: Credentials) => {
+  const { data } = await login(credentials);
+  return data;
+};
+
+const getSelf = async () => {
+  const { data } = await self();
+  return data;
+};
+
 const Login = () => {
+  const { setUser } = useAuthStore();
+
+  const { refetch } = useQuery({
+    queryKey: ['self'],
+    queryFn: getSelf,
+    enabled: false,
+  });
+
+  // const { mutate: logoutMutate } = useMutation({
+  //   mutationKey: ['logout'],
+  //   mutationFn: logout,
+  //   onSuccess: async () => {
+  //     logoutFromStore();
+  //     return;
+  //   },
+  // });
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ['login'],
+    mutationFn: loginUser,
+    onSuccess: async () => {
+      const selfDataPromise = await refetch();
+      // logout or redirect to client ui
+      // window.location.href = "http://clientui/url"
+      // "admin", "manager", "customer"
+      // if (!isAllowed(selfDataPromise.data)) {
+      //     logoutMutate();
+      //     return;
+      // }
+      setUser(selfDataPromise.data);
+    },
+  });
+
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -36,12 +83,7 @@ const Login = () => {
   })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data)
-
-    login(data).then((res) => {
-      console.log(res)
-    })
-   
+    mutate(data);
   }
 
   return (
@@ -94,8 +136,10 @@ const Login = () => {
                   )}
                 />
 
-                <Button type="submit" className="w-full">
-                  Login
+                <Button type="submit" className="w-full" disabled={isPending}>
+                  {
+                    isPending ? <Loader2Icon className="animate-spin" /> : 'Login'
+                  }
                 </Button>
 
               </form>
