@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import type UserService from "./user.service.js";
 import { createUserSchema } from "./create-user.validator.js";
 import createHttpError from "http-errors";
+import { Roles } from "../constants/index.js";
 
 export default class UserController {
   constructor(private userService: UserService) {
@@ -14,8 +15,6 @@ export default class UserController {
 
   create = async (req: Request, res: Response, next: NextFunction) => {
 
-    console.log(req.body);
-
     const validator = createUserSchema.safeParse(req.body);
 
     if (!validator.success) {
@@ -26,14 +25,12 @@ export default class UserController {
 
     const { email, userName, password } = req.body;
 
-    const user = await this.userService.create({ email, userName, password });
+    const user = await this.userService.create({ email, userName, password, role: Roles.MANAGER });
     res.status(201).json(user);
   };
 
   getAll = async (req: Request, res: Response, next: NextFunction) => {
-
     const users = await this.userService.getAll(req);
-
     res.status(200).json(users);
   };
 

@@ -9,7 +9,6 @@ const router = Router();
 
 const userService = new UserService();
 
-
 const authController = new AuthController(userService, logger);
 
 /**
@@ -23,6 +22,16 @@ router.post("/register", authController.register);
  * @method: POST
  */
 router.post("/login", authController.login);
+
+/**
+ * @path: /auth/self
+ * @method: GET
+ */
+router.get(
+  "/self",
+  asyncHandler(protect as unknown as RequestHandler),
+  asyncHandler(authController.self as unknown as RequestHandler)
+);
 
 /**
  * @path: /auth/logout

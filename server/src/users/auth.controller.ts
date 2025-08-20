@@ -5,6 +5,7 @@ import type { AuthRequest } from "./user.types.js";
 import { createUserSchema } from "./create-user.validator.js";
 import { loginUserSchema } from "./login.validator.js";
 import type { Logger } from "winston";
+import { Roles } from "../constants/index.js";
 
 export default class AuthController {
   constructor(private userService: UserService, private logger: Logger) {}
@@ -43,6 +44,7 @@ export default class AuthController {
       email,
       userName,
       password,
+      role: Roles.CUSTOMER,
     });
 
     this.logger.info("User has been registered", { id: newUser._id });
@@ -109,6 +111,10 @@ export default class AuthController {
 
     // 5. send success msg
     res.status(200).json({ id: user._id });
+  };
+
+  self = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    res.status(200).json(req.user);
   };
 
   logout = (req: AuthRequest, res: Response, next: NextFunction) => {

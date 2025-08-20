@@ -6,6 +6,7 @@ import User from "../../users/user.model.js";
 import type { AuthRequest, UserResponse } from "../../users/user.types.js";
 
 async function protect(req: AuthRequest, res: Response, next: NextFunction) {
+  console.log((req as unknown as Request).cookies);
   const token = (req as unknown as Request).cookies?.token as string;
   if (!token) {
     const err = createHttpError(401, "You are not logged in");

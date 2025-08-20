@@ -2,6 +2,7 @@ export interface UserSchema {
   email: string;
   userName: string;
   password: string;
+  role: string
 }
 
 export interface UserResponse {
