@@ -1,7 +1,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
 import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
@@ -16,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { GalleryVerticalEnd } from "lucide-react"
+import { login } from "@/http/api"
 
 const FormSchema = z.object({
   email: z.string().email({
@@ -37,13 +37,11 @@ const Login = () => {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data)
-    toast("You submitted the following values", {
-      description: (
-        <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+
+    login(data).then((res) => {
+      console.log(res)
     })
+   
   }
 
   return (
