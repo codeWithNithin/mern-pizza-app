@@ -7,6 +7,9 @@ const NonAuth = () => {
 
   const returnTo = new URLSearchParams(location.search).get('returnTo') || '/' 
 
+  console.log(returnTo)
+  console.log(user)
+
   if (user !== null) return <Navigate to={returnTo} replace={true} />;
 
   return (
