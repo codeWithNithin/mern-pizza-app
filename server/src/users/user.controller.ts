@@ -25,7 +25,7 @@ export default class UserController {
 
     const { email, userName, password } = req.body;
 
-    const user = await this.userService.create({ email, userName, password, role: Roles.MANAGER });
+    const user = await this.userService.create({ email, userName, password, role: Roles.CUSTOMER });
     res.status(201).json(user);
   };
 
