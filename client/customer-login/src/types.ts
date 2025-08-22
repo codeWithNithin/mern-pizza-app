@@ -3,6 +3,12 @@ export type Credentials = {
   password: string;
 };
 
+export type RegisterCreds = {
+  email: string;
+  password: string;
+  userName: string;
+}
+
 export type User = {
   _id: string;
   email: string;

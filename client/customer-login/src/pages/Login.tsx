@@ -19,6 +19,7 @@ import { login, self } from "@/http/api"
 import { useAuthStore } from "@/store"
 import type { Credentials } from "@/types"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { useNavigate } from "react-router-dom"
 
 const FormSchema = z.object({
   email: z.string().email({
@@ -41,6 +42,8 @@ const getSelf = async () => {
 
 const Login = () => {
   const { setUser } = useAuthStore();
+
+  const navigate = useNavigate()
 
   const { refetch } = useQuery({
     queryKey: ['self'],
@@ -103,7 +106,7 @@ const Login = () => {
               Enter your email below to login to your account
             </CardDescription>
             <CardAction>
-              <Button variant="link">Sign Up</Button>
+              <Button variant="link" onClick={() => { navigate('/auth/register') }}>Sign Up</Button>
             </CardAction>
           </CardHeader>
           <CardContent className="w-full">
