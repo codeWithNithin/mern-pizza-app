@@ -37,7 +37,7 @@ router.get(
  * @path: /auth/logout
  * @method: POST
  */
-router.get(
+router.post(
   "/logout",
   asyncHandler(protect as unknown as RequestHandler),
   asyncHandler(authController.logout as unknown as RequestHandler)
