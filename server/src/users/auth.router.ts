@@ -35,7 +35,7 @@ router.get(
 
 /**
  * @path: /auth/logout
- * @method: GET
+ * @method: POST
  */
 router.get(
   "/logout",
